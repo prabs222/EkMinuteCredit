@@ -1,4 +1,3 @@
-// routes/check-eligibility.js
 const express = require('express');
 const { Customer, Loan } = require('../models');
 
@@ -8,18 +7,18 @@ router.post('/', async (req, res) => {
     try {
         const { customer_id, loan_amount, interest_rate, tenure } = req.body;
 
-        // Parse to integers
+        // Parsing to integers
         const customerId = parseInt(customer_id);
         const parsedLoanAmount = parseFloat(loan_amount);
         const parsedInterestRate = parseFloat(interest_rate);
         const parsedTenure = parseInt(tenure);
 
-        // Validate inputs
+        // Validating inputs
         if (isNaN(customerId) || isNaN(parsedLoanAmount) || isNaN(parsedInterestRate) || isNaN(parsedTenure)) {
             return res.status(400).json({ error: 'Invalid input. Please provide valid numeric values.' });
         }
 
-        // Retrieve customer's information from the database
+        // Retrieving customer's information from the database
         const customer = await Customer.findByPk(customerId, {
             include: [{ model: Loan, attributes: ['loan_amount', 'emis_paid_on_time', 'start_date', 'end_date'] }],
         });
@@ -29,7 +28,7 @@ router.post('/', async (req, res) => {
             return res.status(404).json({ error: 'Customer not found' });
         }
         
-        // Calculate credit score
+        // Calculating credit score
         const creditScore = calculateFinalCreditScore(customer);
 
 
@@ -60,20 +59,16 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Function to calculate credit score
 
+// Function to calculate credit score, this is just used as a demo function 
+// and it's each function can be manipulated accoring to the needs
 function calculateFinalCreditScore(customer) {
     const paymentHistoryScore = calculatePaymentHistoryScore(customer);
     const amountsOwedScore = calculateAmountsOwedScore(customer);
     const creditHistoryLengthScore = calculateCreditHistoryLengthScore(customer);
     const loanActivityInCurrentYear = calculateLoanActivityInCurrentYear(customer);
+    
     // Sum up the scores for each component
-
-    console.log(paymentHistoryScore);
-    console.log(amountsOwedScore);
-    console.log(creditHistoryLengthScore);
-    console.log(loanActivityInCurrentYear);
-
     const totalScore = paymentHistoryScore + amountsOwedScore + creditHistoryLengthScore - (5*loanActivityInCurrentYear);
   
     // Round the total score to a whole number
@@ -82,7 +77,7 @@ function calculateFinalCreditScore(customer) {
     
 function calculatePaymentHistoryScore(customer) {
     if (!customer.Loans || customer.Loans.length === 0) {
-        return 35; // Assuming 100% if no past loans
+        return 35; // Assuming 35% if no past loans
     }
 
     const totalLoans = customer.Loans.length;
@@ -170,7 +165,6 @@ function determineLoanApprovalAndRate(creditScore, customer, loanAmount, interes
     let approval = false;
     let correctedInterestRate = interestRate;
     let monthlyInstalment = 0;
-    console.log("heyy",creditScore);
 
     if (creditScore > 50) {
         approval = true;
@@ -210,9 +204,10 @@ function calculateLoanActivityInCurrentYear(customer) {
 
 
 // Function to calculate Monthly Instalment
+// This function uses compound interest scheme to calculate monthlyInstalment
 function calculateMonthlyInstalment(loanAmount, interestRate, tenure) {
     const monthlyInterestRate = interestRate / 100 / 12;
-    const numberOfPayments = tenure * 12;
+    const numberOfPayments = tenure;
 
     const monthlyInstalment =
         (loanAmount * monthlyInterestRate) /

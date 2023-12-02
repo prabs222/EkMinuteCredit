@@ -9,7 +9,7 @@ async function runDataIngestion() {
   } catch (error) {
     console.error('Error during data ingestion:', error);
   } finally {
-    process.exit(); // Close the worker process
+    process.exit(); // Close the worker process, this will stop the server
   }
 }
 

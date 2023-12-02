@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   class Loan extends Model {
     static associate(models) {
       Loan.belongsTo(models.Customer, { foreignKey: 'customer_id' });
+      Loan.hasMany(models.Payment, { foreignKey: 'loan_id' }); 
     }
   }
 
@@ -24,6 +25,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     start_date: DataTypes.DATE,
     end_date: DataTypes.DATE,
+    totalEmisPaid: {            // additional field created to calculate the remainingEmisPaid
+      type: DataTypes.INTEGER,  // which helps to calculate the newMonthlyInstalment
+      allowNull: true,
+      defaultValue: 0, 
+    },
+  
   }, {
     sequelize,
     modelName: 'Loan',
