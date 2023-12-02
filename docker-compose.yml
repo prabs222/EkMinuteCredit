@@ -1,0 +1,21 @@
+version: '3'
+services:
+  # Node.js application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: "development"
+    depends_on:
+      - db
+
+  # PostgreSQL database
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: prabhakar
+      POSTGRES_PASSWORD: Prabhakar@123#

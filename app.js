@@ -10,7 +10,16 @@ const viewStatementsRoute = require('./routes/view-statement');
 const viewAllStatementsRoute = require('./routes/view-all-statement');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+// Allow any host during development
+if (process.env.NODE_ENV === 'development') {
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+  });
+}
+
 
 // Logging Middleware
 app.use((req, res, next) => {
@@ -40,9 +49,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-
-
-
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is running on http://0.0.0.0:${port}`);
 });
+

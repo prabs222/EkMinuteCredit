@@ -3,7 +3,7 @@
     "username": "prabhakar",
     "password": "Prabhakar@123#",
     "database": "test",
-    "host": "127.0.0.1",
+    "host": "db",
     "dialect": "postgres"
   }
 }
